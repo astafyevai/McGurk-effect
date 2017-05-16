@@ -15,9 +15,9 @@ map.feature(df$languages,
 library(tidyverse)
 df <- read.csv("pre_results.csv")
 
-levels(df$example.audio) <- c("p", "t", "k")
-levels(df$example.video) <- c("k", "t", "p")
-levels(df$answer) <- c("p", "t", "k", "-")
+# levels(df$example.audio) <- c("p", "t", "k")
+# levels(df$example.video) <- c("k", "t", "p")
+# levels(df$answer) <- c("p", "t", "k", "-")
 
 df %>%
   count(sex, example.audio, example.video, answer, sort = TRUE) %>% 
