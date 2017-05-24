@@ -1,6 +1,6 @@
 ---
 title: "Анализ результатов эксперимента (ГМ)"
-output: word_document
+output: html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE)
@@ -127,3 +127,25 @@ head(my_df_equalities)
 
 В результате, получилось 6 контекстов, в каждом из которых случаев совпадений ответа респондента с аудио стимулом в более чем пять раз превосходит количество случаев совпадений ответа респондента с видео стимулом. Данное различие для любых пар чисел больше 1 будет давать статистически значимое различие при использовании метода $\chi^2$.
 
+## 2.4 Влияние порядка
+Чтобы показать, что порядок не влияет необходимо составить таблицу совсеми возможными порядками и одним столбцом со всеми возможными комбинациями ответов и стимулов.
+
+```{r}
+my_df %>%
+  na.omit() %>% 
+  count(example.audio, example.video, answer, order) %>% 
+  spread(key = order, value = n) %>% 
+  mutate(`1` = ifelse(is.na(`1`), as.integer(0), `1`),
+         `2` = ifelse(is.na(`2`), as.integer(0), `2`),
+         `3` = ifelse(is.na(`3`), as.integer(0), `3`),
+         type = paste(example.audio, example.video, answer)) %>% 
+  ungroup() %>% 
+  select(type, `1`, `2`, `3`) ->
+  my_df_groups
+head(my_df_groups)
+```
+
+```{r, cache=TRUE}
+fisher.test(my_df_groups[, -1], simulate.p.value=TRUE,B=1e7)
+```
+И опять точный Тест Фишера (p-value = 0.64 > 0.05) показал, что у нас нет оснований отвергать нулевую гипотезу о том, что порядок не влияет на рспределение ответов.

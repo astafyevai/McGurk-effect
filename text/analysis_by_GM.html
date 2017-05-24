@@ -127,7 +127,7 @@ $(document).ready(function () {
 <p>Загружаем данные и смотрим их структуру:</p>
 <pre class="r"><code>my_df &lt;- read_csv2(&quot;../data/final results.csv&quot;)
 head(my_df)</code></pre>
-<pre><code>## # A tibble: 6 × 7
+<pre><code>## # A tibble: 6 x 7
 ##      id   sex example.audio example.video answer order   v_a
 ##   &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt; &lt;int&gt; &lt;chr&gt;
 ## 1     1     f             p             k      p     1     v
@@ -193,7 +193,7 @@ my_df$answer &lt;- factor(my_df$answer, levels = c(&quot;-&quot;, &quot;p&quot;,
   select(type, f, m) -&gt;
   my_df_sex
 head(my_df_sex)</code></pre>
-<pre><code>## # A tibble: 6 × 3
+<pre><code>## # A tibble: 6 x 3
 ##      type     f     m
 ##     &lt;chr&gt; &lt;int&gt; &lt;int&gt;
 ## 1 p p p a    15    15
@@ -209,7 +209,7 @@ head(my_df_sex)</code></pre>
 ##  on 1e+07 replicates)
 ## 
 ## data:  my_df_sex[, -1]
-## p-value = 0.9302
+## p-value = 0.9258
 ## alternative hypothesis: two.sided</code></pre>
 <p>Как видно из очень выского p-value (0.93 &gt; 0.05), у нас нет оснований отбросить нулевую гепотизу о том, что пол респондента не влияет на ответы.</p>
 </div>
@@ -227,7 +227,7 @@ head(my_df_sex)</code></pre>
   select(type, v, a) -&gt;
   my_df_v_a
 head(my_df_v_a)</code></pre>
-<pre><code>## # A tibble: 6 × 3
+<pre><code>## # A tibble: 6 x 3
 ##    type     v     a
 ##   &lt;chr&gt; &lt;int&gt; &lt;int&gt;
 ## 1 p p p   120    30
@@ -243,9 +243,9 @@ head(my_df_v_a)</code></pre>
 ##  on 1e+07 replicates)
 ## 
 ## data:  my_df_v_a[, -1]
-## p-value = 0.666
+## p-value = 0.7241
 ## alternative hypothesis: two.sided</code></pre>
-<p>Как видно из очень выского p-value (0.72 &gt; 0.05), у нас нет оснований отбросить нулевую гепотизу о том, что просмотр видео стимулов влияет на ответы респондентов. В результате, мы убеждаемся, что наблюдаемый эффект (ответы k, при видео стимуле p и при аудио стимуле t) связан с особенностью нашего стимула, а не вызван каким-то перцептивным эффектом связанным с взаимодействием аудио и видео стимулов.</p>
+<p>Как видно из очень выского p-value (0.66 &gt; 0.05), у нас нет оснований отбросить нулевую гепотизу о том, что просмотр видео стимулов влияет на ответы респондентов. В результате, мы убеждаемся, что наблюдаемый эффект (ответы k, при видео стимуле p и при аудио стимуле t) связан с особенностью нашего стимула, а не вызван каким-то перцептивным эффектом связанным с взаимодействием аудио и видео стимулов.</p>
 </div>
 <div id="--------" class="section level2">
 <h2>2.3 Каке стимулы больше влияют на ответы: видео или аудио?</h2>
@@ -264,6 +264,7 @@ head(my_df_equalities)</code></pre>
 <pre><code>## Source: local data frame [6 x 4]
 ## Groups: example.audio, example.video [6]
 ## 
+## # A tibble: 6 x 4
 ##   example.audio example.video  eq_a  eq_v
 ##           &lt;chr&gt;         &lt;chr&gt; &lt;int&gt; &lt;int&gt;
 ## 1             k             p   123    18
@@ -273,6 +274,40 @@ head(my_df_equalities)</code></pre>
 ## 5             t             k   148     1
 ## 6             t             p    43     7</code></pre>
 <p>В результате, получилось 6 контекстов, в каждом из которых случаев совпадений ответа респондента с аудио стимулом в более чем пять раз превосходит количество случаев совпадений ответа респондента с видео стимулом. Данное различие для любых пар чисел больше 1 будет давать статистически значимое различие при использовании метода <span class="math inline">\(\chi^2\)</span>.</p>
+</div>
+<div id="-" class="section level2">
+<h2>2.4 Влияние порядка</h2>
+<p>Чтобы показать, что порядок не влияет необходимо составить таблицу совсеми возможными порядками и одним столбцом со всеми возможными комбинациями ответов и стимулов.</p>
+<pre class="r"><code>my_df %&gt;%
+  na.omit() %&gt;% 
+  count(example.audio, example.video, answer, order) %&gt;% 
+  spread(key = order, value = n) %&gt;% 
+  mutate(`1` = ifelse(is.na(`1`), as.integer(0), `1`),
+         `2` = ifelse(is.na(`2`), as.integer(0), `2`),
+         `3` = ifelse(is.na(`3`), as.integer(0), `3`),
+         type = paste(example.audio, example.video, answer)) %&gt;% 
+  ungroup() %&gt;% 
+  select(type, `1`, `2`, `3`) -&gt;
+  my_df_groups
+head(my_df_groups)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##    type   `1`   `2`   `3`
+##   &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1 k k k    49    49    49
+## 2 k k p     0     0     1
+## 3 k k t     1     1     0
+## 4 k p -     4     0     1
+## 5 k p k    36    43    44
+## 6 k p p     7     6     5</code></pre>
+<pre class="r"><code>fisher.test(my_df_groups[, -1], simulate.p.value=TRUE,B=1e7)</code></pre>
+<pre><code>## 
+##  Fisher's Exact Test for Count Data with simulated p-value (based
+##  on 1e+07 replicates)
+## 
+## data:  my_df_groups[, -1]
+## p-value = 0.6489
+## alternative hypothesis: two.sided</code></pre>
+<p>И опять точный Тест Фишера (p-value = 0.64 &gt; 0.05) показал, что у нас нет оснований отвергать нулевую гипотезу о том, что порядок не влияет на рспределение ответов.</p>
 </div>
 
 
