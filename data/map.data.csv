@@ -1,19 +1,20 @@
-languages,lat,long
-English,53,-1
-English,-28.130833,147.028182
-English,35.337265,-92.540058
-English,50.002225,-84.988887
-English,55.95000,-3.19889
-Danish,54.8655,9.36284
-Yue Chinese,23,113
-French,48,2
-French,62.582758,-114.635976
-Spanish,40.4414175,-1.11788
-Standard Malay,3.088957,101.698608
-Korean,37.5,128
-German,48.648954,12.4676233333
-Hungarian,46.9068585714,19.6555271429
-Finnish,64.76283,25.55767
-Mandarin Chinese,40.02088,116.228
-Japanese,35,135
-Polish,51.84392,18.62549
+languages,lat,long,color
+English,53,-1,black
+English,-28.130833,147.028182,black
+English,35.337265,-92.540058,black
+English,50.002225,-84.988887,black
+English,55.95000,-3.19889,black
+Danish,54.8655,9.36284,black
+Yue Chinese,23,113,black
+French,48,2,black
+French,62.582758,-114.635976,black
+Spanish,40.4414175,-1.11788,black
+Standard Malay,3.088957,101.698608,black
+Korean,37.5,128,black
+German,48.648954,12.4676233333,black
+Hungarian,46.9068585714,19.6555271429,black
+Finnish,64.76283,25.55767,black
+Mandarin Chinese,40.02088,116.228,black
+Japanese,35,135,black
+Polish,51.84392,18.62549,red
+Russian,59,50,red
